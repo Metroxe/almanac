@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/Metroxe/almanac/compare/backend-v0.1.2...backend-v0.1.3) (2026-05-10)
+
+
+### Bug Fixes
+
+* **backend:** chown WORKDIR itself, not just copied files ([#5](https://github.com/Metroxe/almanac/issues/5)) ([d0fee4d](https://github.com/Metroxe/almanac/commit/d0fee4de4e66ed5b882c2e51dbdf783e93c6d840))
+
 ## [0.1.2](https://github.com/Metroxe/almanac/compare/backend-v0.1.1...backend-v0.1.2) (2026-05-10)
 
 
