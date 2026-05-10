@@ -23,12 +23,14 @@ FROM node:${NODE_VERSION}-alpine AS runtime
 ENV NODE_ENV=production
 ENV PORT=8787
 WORKDIR /app
-COPY --from=builder /repo/package.json /repo/package-lock.json ./
-COPY --from=builder /repo/node_modules ./node_modules
-COPY --from=builder /repo/packages/shared/package.json packages/shared/package.json
-COPY --from=builder /repo/packages/shared/dist packages/shared/dist
-COPY --from=builder /repo/apps/backend/package.json apps/backend/package.json
-COPY --from=builder /repo/apps/backend/dist apps/backend/dist
+COPY --from=builder --chown=node:node /repo/package.json /repo/package-lock.json ./
+COPY --from=builder --chown=node:node /repo/node_modules ./node_modules
+COPY --from=builder --chown=node:node /repo/packages/shared/package.json packages/shared/package.json
+COPY --from=builder --chown=node:node /repo/packages/shared/dist packages/shared/dist
+COPY --from=builder --chown=node:node /repo/apps/backend/package.json apps/backend/package.json
+COPY --from=builder --chown=node:node /repo/apps/backend/dist apps/backend/dist
+# Cache dir (apps/backend/recipes/) is created at runtime by RecipeCache.load().
+# Node user owns /app via --chown above so the mkdir succeeds.
 EXPOSE 8787
 USER node
 CMD ["node", "apps/backend/dist/index.js"]
