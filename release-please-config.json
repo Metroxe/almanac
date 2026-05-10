@@ -1,0 +1,15 @@
+{
+	"$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+	"release-type": "node",
+	"include-component-in-tag": true,
+	"separate-pull-requests": false,
+	"bump-minor-pre-major": true,
+	"bump-patch-for-minor-pre-major": true,
+	"plugins": ["node-workspace"],
+	"packages": {
+		"apps/backend": { "component": "backend" },
+		"apps/discoverer": { "component": "discoverer" },
+		"apps/mcp": { "component": "mcp" },
+		"packages/shared": { "component": "shared" }
+	}
+}

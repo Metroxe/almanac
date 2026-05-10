@@ -23,10 +23,7 @@ export async function verifyDeliverable(
 		};
 	}
 
-	if (
-		process.env["ALMANAC_SMOKE_TEST"] === "true" &&
-		parsed.data.fastest_path
-	) {
+	if (process.env.ALMANAC_SMOKE_TEST === "true" && parsed.data.fastest_path) {
 		const result = await smokeTestUrlTemplate(parsed.data);
 		if (!result.ok) return result;
 	}

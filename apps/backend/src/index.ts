@@ -5,13 +5,13 @@ import { cors } from "hono/cors";
 import { z } from "zod";
 import { verifyDeliverable } from "./verify.js";
 
-const niaApiKey = process.env["NIA_API_KEY"];
-const niaKbId = process.env["NIA_KB_ID"];
-const writeToken = process.env["ALMANAC_WRITE_TOKEN"];
-const clustlyApiKey = process.env["CLUSTLY_API_KEY"];
-const clustlyWebhookSecret = process.env["CLUSTLY_WEBHOOK_SECRET"];
-const clustlyLive = process.env["CLUSTLY_LIVE"] === "true";
-const port = Number(process.env["PORT"] ?? 8787);
+const niaApiKey = process.env.NIA_API_KEY;
+const niaKbId = process.env.NIA_KB_ID;
+const writeToken = process.env.ALMANAC_WRITE_TOKEN;
+const clustlyApiKey = process.env.CLUSTLY_API_KEY;
+const clustlyWebhookSecret = process.env.CLUSTLY_WEBHOOK_SECRET;
+const clustlyLive = process.env.CLUSTLY_LIVE === "true";
+const port = Number(process.env.PORT ?? 8787);
 
 if (!niaApiKey || !niaKbId) {
 	throw new Error("NIA_API_KEY and NIA_KB_ID must be set");
