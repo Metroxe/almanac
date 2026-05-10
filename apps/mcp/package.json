@@ -1,0 +1,24 @@
+{
+	"name": "@almanac/mcp",
+	"version": "0.1.0",
+	"description": "Almanac MCP server — local stdio MCP that any coding agent can install",
+	"type": "module",
+	"bin": {
+		"almanac": "./dist/index.js"
+	},
+	"main": "./dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc --build && chmod +x dist/index.js",
+		"dev": "tsx watch src/index.ts",
+		"start": "node dist/index.js",
+		"prepublishOnly": "npm run build"
+	},
+	"dependencies": {
+		"@almanac/shared": "0.1.0",
+		"@modelcontextprotocol/sdk": "^1.29.0",
+		"zod": "^4.4.3"
+	}
+}

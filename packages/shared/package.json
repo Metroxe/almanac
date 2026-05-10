@@ -1,0 +1,36 @@
+{
+	"name": "@almanac/shared",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Shared types, schemas, and clients (Recipe, Nia, Clustly)",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./recipe": {
+			"types": "./dist/recipe.d.ts",
+			"default": "./dist/recipe.js"
+		},
+		"./nia": {
+			"types": "./dist/nia.d.ts",
+			"default": "./dist/nia.js"
+		},
+		"./clustly": {
+			"types": "./dist/clustly.d.ts",
+			"default": "./dist/clustly.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc --build"
+	},
+	"dependencies": {
+		"zod": "^4.4.3"
+	}
+}

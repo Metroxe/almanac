@@ -1,0 +1,19 @@
+{
+	"name": "@almanac/discoverer",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Discoverer agent — Playwright-driven exploration that POSTs recipes to the backend",
+	"type": "module",
+	"main": "./dist/index.js",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsx --env-file=../../.env src/index.ts",
+		"bounty": "tsx --env-file=../../.env src/bounty.ts",
+		"start": "node --env-file=../../.env dist/index.js"
+	},
+	"dependencies": {
+		"@almanac/shared": "0.1.0",
+		"playwright": "^1.59.1",
+		"zod": "^4.4.3"
+	}
+}

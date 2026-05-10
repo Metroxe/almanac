@@ -1,5 +1,4 @@
-import type { Recipe } from "../shared/recipe.js";
-import { Recipe as RecipeSchema } from "../shared/recipe.js";
+import { type Recipe, Recipe as RecipeSchema } from "@almanac/shared";
 
 export interface VerifyResult {
 	ok: boolean;
@@ -13,7 +12,9 @@ export interface VerifyResult {
 //   2. Smoke test (optional, in production) — load the fastest_path URL via
 //      Playwright headless, confirm a non-error page comes back. Heavy, so
 //      gated behind an env flag for now.
-export async function verifyDeliverable(payload: unknown): Promise<VerifyResult> {
+export async function verifyDeliverable(
+	payload: unknown,
+): Promise<VerifyResult> {
 	const parsed = RecipeSchema.safeParse(payload);
 	if (!parsed.success) {
 		return {
@@ -22,7 +23,10 @@ export async function verifyDeliverable(payload: unknown): Promise<VerifyResult>
 		};
 	}
 
-	if (process.env["ALMANAC_SMOKE_TEST"] === "true" && parsed.data.fastest_path) {
+	if (
+		process.env["ALMANAC_SMOKE_TEST"] === "true" &&
+		parsed.data.fastest_path
+	) {
 		const result = await smokeTestUrlTemplate(parsed.data);
 		if (!result.ok) return result;
 	}
@@ -37,7 +41,10 @@ async function smokeTestUrlTemplate(recipe: Recipe): Promise<VerifyResult> {
 	const browser = await chromium.launch();
 	try {
 		const page = await browser.newPage();
-		const probe = fillTemplate(recipe.fastest_path.template, recipe.fastest_path.params);
+		const probe = fillTemplate(
+			recipe.fastest_path.template,
+			recipe.fastest_path.params,
+		);
 		const res = await page.goto(probe, { timeout: 15_000 });
 		if (!res || res.status() >= 400) {
 			return { ok: false, reason: `smoke test got status ${res?.status()}` };
@@ -48,7 +55,10 @@ async function smokeTestUrlTemplate(recipe: Recipe): Promise<VerifyResult> {
 	}
 }
 
-function fillTemplate(template: string, params: Record<string, string>): string {
+function fillTemplate(
+	template: string,
+	params: Record<string, string>,
+): string {
 	return Object.entries(params).reduce(
 		(url, [key, hint]) => url.replaceAll(`{${key}}`, sampleFor(key, hint)),
 		template,

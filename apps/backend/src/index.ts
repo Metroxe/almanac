@@ -1,10 +1,8 @@
+import { ClustlyClient, NiaClient, Recipe } from "@almanac/shared";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { z } from "zod";
-import { Recipe } from "../shared/recipe.js";
-import { NiaClient } from "../shared/nia.js";
-import { ClustlyClient } from "../shared/clustly.js";
 import { verifyDeliverable } from "./verify.js";
 
 const niaApiKey = process.env["NIA_API_KEY"];
@@ -22,7 +20,8 @@ if (!writeToken) {
 	throw new Error("ALMANAC_WRITE_TOKEN must be set (gates discoverer writes)");
 }
 
-const nia = new NiaClient({ apiKey: niaApiKey, knowledgeBaseId: niaKbId });
+// NIA_KB_ID is the source_id returned from `POST /v2/fs` during one-time setup.
+const nia = new NiaClient({ apiKey: niaApiKey, sourceId: niaKbId });
 const clustly = clustlyApiKey
 	? new ClustlyClient({ apiKey: clustlyApiKey, live: clustlyLive })
 	: null;
@@ -57,7 +56,10 @@ app.post("/recipes", async (c) => {
 	}
 	const parsed = Recipe.safeParse(await c.req.json());
 	if (!parsed.success) {
-		return c.json({ error: "invalid recipe", details: parsed.error.issues }, 400);
+		return c.json(
+			{ error: "invalid recipe", details: parsed.error.issues },
+			400,
+		);
 	}
 	await nia.upsertRecipe(parsed.data);
 	return c.json({ ok: true, id: parsed.data.id });
@@ -75,7 +77,12 @@ const BountyRequest = z.object({
 	intent: z.string(),
 	description: z.string().min(20),
 	bountyUsdc: z.number().min(1).max(500).default(20),
-	deadlineSeconds: z.number().int().min(3600).max(7 * 86400).default(86400),
+	deadlineSeconds: z
+		.number()
+		.int()
+		.min(3600)
+		.max(7 * 86400)
+		.default(86400),
 });
 
 app.post("/bounties", async (c) => {
@@ -86,9 +93,13 @@ app.post("/bounties", async (c) => {
 	if (!clustly) return c.json({ error: "clustly not configured" }, 503);
 	const parsed = BountyRequest.safeParse(await c.req.json());
 	if (!parsed.success) {
-		return c.json({ error: "invalid bounty", details: parsed.error.issues }, 400);
+		return c.json(
+			{ error: "invalid bounty", details: parsed.error.issues },
+			400,
+		);
 	}
-	const { site, intent, description, bountyUsdc, deadlineSeconds } = parsed.data;
+	const { site, intent, description, bountyUsdc, deadlineSeconds } =
+		parsed.data;
 	const task = await clustly.createTask({
 		title: `Almanac recipe: ${site} — ${intent}`,
 		brief: [
@@ -135,7 +146,11 @@ app.post("/webhooks/clustly", async (c) => {
 	const result = await verifyDeliverable(body.payload);
 	if (!result.ok || !result.recipe) {
 		console.log("[delivery rejected]", body.taskId, result.reason);
-		await clustly?.rejectDelivery(body.taskId, body.deliveryId, result.reason ?? "invalid");
+		await clustly?.rejectDelivery(
+			body.taskId,
+			body.deliveryId,
+			result.reason ?? "invalid",
+		);
 		return c.json({ ok: false, reason: result.reason });
 	}
 	await nia.upsertRecipe(result.recipe);

@@ -6,7 +6,8 @@
 import { readFile } from "node:fs/promises";
 import { z } from "zod";
 
-const backendUrl = process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
+const backendUrl =
+	process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
 const writeToken = process.env["ALMANAC_WRITE_TOKEN"];
 
 if (!writeToken) {
@@ -18,7 +19,12 @@ const BountyEntry = z.object({
 	intent: z.string(),
 	description: z.string().min(20),
 	bountyUsdc: z.number().min(1).max(500).optional(),
-	deadlineSeconds: z.number().int().min(3600).max(7 * 86400).optional(),
+	deadlineSeconds: z
+		.number()
+		.int()
+		.min(3600)
+		.max(7 * 86400)
+		.optional(),
 });
 
 const BountyFile = z.array(BountyEntry);
@@ -39,7 +45,9 @@ async function main(): Promise<void> {
 			body: JSON.stringify(entry),
 		});
 		if (!res.ok) {
-			console.error(`✗ ${entry.site} / ${entry.intent}: ${res.status} ${await res.text()}`);
+			console.error(
+				`✗ ${entry.site} / ${entry.intent}: ${res.status} ${await res.text()}`,
+			);
 			continue;
 		}
 		const body = (await res.json()) as { task: { id: string } };

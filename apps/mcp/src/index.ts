@@ -19,10 +19,7 @@ server.registerTool(
 			"Search the Almanac index for a recipe matching a natural-language intent. Optionally scope to a specific site.",
 		inputSchema: {
 			intent: z.string().describe("e.g. 'search one-way flights'"),
-			site: z
-				.string()
-				.optional()
-				.describe("e.g. 'google.com/travel/flights'"),
+			site: z.string().optional().describe("e.g. 'google.com/travel/flights'"),
 			limit: z.number().int().min(1).max(20).optional(),
 		},
 	},
@@ -35,7 +32,10 @@ server.registerTool(
 		if (!res.ok) {
 			return {
 				content: [
-					{ type: "text", text: `search failed: ${res.status} ${await res.text()}` },
+					{
+						type: "text",
+						text: `search failed: ${res.status} ${await res.text()}`,
+					},
 				],
 				isError: true,
 			};
@@ -62,7 +62,10 @@ server.registerTool(
 		if (!res.ok) {
 			return {
 				content: [
-					{ type: "text", text: `fetch failed: ${res.status} ${await res.text()}` },
+					{
+						type: "text",
+						text: `fetch failed: ${res.status} ${await res.text()}`,
+					},
 				],
 				isError: true,
 			};
@@ -93,7 +96,9 @@ server.registerTool(
 			},
 		);
 		return {
-			content: [{ type: "text", text: res.ok ? "reported" : `failed: ${res.status}` }],
+			content: [
+				{ type: "text", text: res.ok ? "reported" : `failed: ${res.status}` },
+			],
 			isError: !res.ok,
 		};
 	},

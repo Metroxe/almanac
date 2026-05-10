@@ -1,8 +1,9 @@
-import { chromium } from "playwright";
 import { createHash } from "node:crypto";
-import type { Recipe } from "../shared/recipe.js";
+import type { Recipe } from "@almanac/shared";
+import { chromium } from "playwright";
 
-const backendUrl = process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
+const backendUrl =
+	process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
 const writeToken = process.env["ALMANAC_WRITE_TOKEN"];
 
 if (!writeToken) {
@@ -24,7 +25,10 @@ async function pushRecipe(recipe: Recipe): Promise<void> {
 }
 
 function hashRecipe(input: object): string {
-	return createHash("sha256").update(JSON.stringify(input)).digest("hex").slice(0, 12);
+	return createHash("sha256")
+		.update(JSON.stringify(input))
+		.digest("hex")
+		.slice(0, 12);
 }
 
 // MVP path: hand-author recipes here, push them via the backend.

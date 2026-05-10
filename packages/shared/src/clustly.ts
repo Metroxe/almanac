@@ -21,7 +21,13 @@ export interface CreateTaskInput {
 
 export interface ClustlyTask {
 	id: string;
-	status: "open" | "claimed" | "delivered" | "approved" | "rejected" | "expired";
+	status:
+		| "open"
+		| "claimed"
+		| "delivered"
+		| "approved"
+		| "rejected"
+		| "expired";
 	createdAt: string;
 }
 
@@ -61,7 +67,10 @@ export class ClustlyClient {
 	async approveDelivery(taskId: string, deliveryId: string): Promise<void> {
 		if (!this.live) return;
 		// TODO: confirm endpoint shape — likely POST /tasks/:id/deliveries/:deliveryId/approve
-		await this.request("POST", `/tasks/${taskId}/deliveries/${deliveryId}/approve`);
+		await this.request(
+			"POST",
+			`/tasks/${taskId}/deliveries/${deliveryId}/approve`,
+		);
 	}
 
 	async rejectDelivery(
@@ -70,9 +79,13 @@ export class ClustlyClient {
 		reason: string,
 	): Promise<void> {
 		if (!this.live) return;
-		await this.request("POST", `/tasks/${taskId}/deliveries/${deliveryId}/reject`, {
-			reason,
-		});
+		await this.request(
+			"POST",
+			`/tasks/${taskId}/deliveries/${deliveryId}/reject`,
+			{
+				reason,
+			},
+		);
 	}
 
 	private async request<T = unknown>(
@@ -90,7 +103,9 @@ export class ClustlyClient {
 		if (body !== undefined) init.body = JSON.stringify(body);
 		const res = await fetch(`${this.baseUrl}${path}`, init);
 		if (!res.ok) {
-			throw new Error(`Clustly ${method} ${path} failed: ${res.status} ${await res.text()}`);
+			throw new Error(
+				`Clustly ${method} ${path} failed: ${res.status} ${await res.text()}`,
+			);
 		}
 		return (await res.json()) as T;
 	}
