@@ -1,5 +1,5 @@
 {
-	"name": "@metroxe/almanac",
+	"name": "@christopher_powroznik/almanac",
 	"version": "0.1.0",
 	"description": "Almanac MCP server — local stdio MCP that any coding agent can install",
 	"type": "module",
