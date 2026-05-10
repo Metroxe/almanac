@@ -23,6 +23,9 @@ FROM node:${NODE_VERSION}-alpine AS runtime
 ENV NODE_ENV=production
 ENV PORT=8787
 WORKDIR /app
+# Docker creates WORKDIR as root; node user needs to own it so RecipeCache.load()
+# can mkdir('recipes') at runtime (cwd-relative path → /app/recipes).
+RUN chown node:node /app
 COPY --from=builder --chown=node:node /repo/package.json /repo/package-lock.json ./
 COPY --from=builder --chown=node:node /repo/node_modules ./node_modules
 COPY --from=builder --chown=node:node /repo/packages/shared/package.json packages/shared/package.json
