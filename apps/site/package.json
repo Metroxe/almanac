@@ -1,0 +1,6 @@
+{
+	"name": "@almanac/site",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Almanac marketing site — static landing page served by nginx"
+}

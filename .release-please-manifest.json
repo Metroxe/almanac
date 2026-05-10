@@ -2,5 +2,6 @@
 	"apps/backend": "0.1.4",
 	"apps/discoverer": "0.1.2",
 	"apps/mcp": "0.1.2",
+	"apps/site": "0.1.0",
 	"packages/shared": "0.1.2"
 }
