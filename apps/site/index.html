@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Almanac — the web, already read.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2EEE3;
+    --paper-2:#EAE4D4;
+    --ink:#0E0D0B;
+    --ink-2:#1A1816;
+    --muted:rgba(14,13,11,0.55);
+    --rule:rgba(14,13,11,0.18);
+    --rule-soft:rgba(14,13,11,0.08);
+    --accent:#E84C2A;
+    --accent-deep:#C73B1D;
+    --term-bg:#0B0B0E;
+    --term-bg-2:#0F0F13;
+    --term-line:rgba(255,255,255,0.08);
+    --term-dim:rgba(255,255,255,0.5);
+    --term-red:#FF6B5B;
+    --term-green:#5BD8A6;
+    --term-amber:#FFC857;
+    --term-blue:#7EB6FF;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Geist',ui-sans-serif,system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* paper grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:multiply;
+    opacity:.55;
+    z-index:0;
+  }
+  .wrap{position:relative; z-index:1; max-width:1440px; margin:0 auto; padding:0 56px}
+  a{color:inherit; text-decoration:none}
+  .serif{font-family:'Instrument Serif',ui-serif,Georgia,serif; font-weight:400; letter-spacing:-0.01em}
+  .mono{font-family:'Geist Mono',ui-monospace,monospace}
+  .eyebrow{font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted)}
+
+  /* ───────── nav ───────── */
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:22px 0 18px}
+  .brand{display:flex; align-items:baseline; gap:10px}
+  .logo{
+    font-family:'Instrument Serif',serif; font-size:30px; letter-spacing:-0.02em; line-height:1;
+  }
+  .logo em{font-style:italic; color:var(--accent)}
+  .brand-mark{
+    width:22px; height:22px; border:1.5px solid var(--ink); border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Instrument Serif',serif; font-style:italic; font-size:15px; line-height:1; padding-bottom:2px;
+  }
+  .nav-links{display:flex; gap:28px}
+  .nav-links a{font-size:14px; color:var(--ink); opacity:.78; transition:opacity .2s}
+  .nav-links a:hover{opacity:1}
+  .nav-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 16px; border:1px solid var(--ink); border-radius:999px;
+    font-size:14px; font-weight:500; background:var(--ink); color:var(--paper);
+    transition:transform .2s ease, background .2s;
+  }
+  .nav-cta:hover{transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--accent)}
+  .nav-cta .arr{display:inline-block; transition:transform .2s}
+  .nav-cta:hover .arr{transform:translate(2px,-2px)}
+
+  /* ───────── masthead rule ───────── */
+  .rule{height:1px; background:var(--ink); opacity:.85}
+  .rule-double{
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .rule-double::before,.rule-double::after{content:""; height:1px; background:var(--ink)}
+  .rule-double::before{opacity:.85}
+  .rule-double::after{opacity:.4}
+  .masthead-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; font-family:'Geist Mono',monospace; font-size:11px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+  }
+  .masthead-meta .center{display:flex; gap:14px; align-items:center}
+  .masthead-meta .dot{width:5px; height:5px; border-radius:50%; background:var(--accent); display:inline-block; animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.5; transform:scale(1.4)}}
+
+  /* ───────── hero ───────── */
+  .hero{
+    display:grid; grid-template-columns:minmax(0, 1.55fr) minmax(0, 1fr);
+    gap:64px; padding:72px 0 56px; align-items:start;
+  }
+  .hero-title{
+    font-family:'Instrument Serif',serif;
+    font-weight:400;
+    font-size:clamp(72px, 10vw, 168px);
+    line-height:0.92;
+    letter-spacing:-0.035em;
+    margin:18px 0 0;
+  }
+  .hero-title em{font-style:italic; color:var(--ink)}
+  .hero-title .accent{color:var(--accent); font-style:italic; position:relative;}
+  .hero-title .accent::after{
+    content:"."; color:var(--ink); font-style:normal;
+  }
+  .hero-title .word{display:inline-block; opacity:0; transform:translateY(28px); animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero-title .word:nth-child(1){animation-delay:.05s}
+  .hero-title .word:nth-child(2){animation-delay:.15s}
+  .hero-title .word:nth-child(3){animation-delay:.35s}
+  .hero-title .word:nth-child(4){animation-delay:.5s}
+  @keyframes rise{to{opacity:1; transform:translateY(0)}}
+
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'Geist Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink); padding:6px 12px; border:1px solid var(--rule); border-radius:999px;
+    background:rgba(255,255,255,0.4);
+  }
+  .hero-eyebrow .blip{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px rgba(232,76,42,.18)}
+
+  .hero-sub{
+    margin:36px 0 0; max-width:580px;
+    font-size:20px; line-height:1.45; color:var(--ink); opacity:.82;
+  }
+  .hero-sub b{font-weight:600; opacity:1}
+  .hero-ctas{display:flex; gap:18px; align-items:center; margin-top:32px; flex-wrap:wrap}
+  .btn-primary{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:16px 24px; border-radius:999px;
+    background:var(--accent); color:#fff; font-weight:500; font-size:15px;
+    border:1px solid var(--accent-deep);
+    box-shadow:0 1px 0 rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.18);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(232,76,42,.32)}
+  .btn-primary .arr{transition:transform .2s}
+  .btn-primary:hover .arr{transform:translateX(3px)}
+  .btn-text{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:14px 4px; font-weight:500; font-size:15px;
+    border-bottom:1px solid var(--ink); color:var(--ink);
+  }
+  .btn-text .arr{font-family:'Instrument Serif',serif; font-style:italic; font-size:18px}
+
+  .compat{
+    margin-top:44px; font-size:12.5px; letter-spacing:.04em;
+    color:var(--muted); display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center;
+  }
+  .compat-label{
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  }
+  .compat-tools{display:flex; gap:18px; flex-wrap:wrap}
+  .compat-tools span{position:relative}
+  .compat-tools span:not(:last-child)::after{
+    content:"·"; position:absolute; right:-12px; opacity:.4;
+  }
+
+  /* index card */
+  .hero-index{
+    margin-top:18px;
+    border:1px solid var(--ink);
+    background:rgba(255,255,255,.35);
+    padding:22px 22px 16px;
+    box-shadow: 6px 6px 0 var(--ink);
+    position:relative;
+    transform:rotate(.4deg);
+  }
+  .hero-index::before{
+    content:""; position:absolute; left:0; right:0; top:6px; height:1px; background:var(--ink); opacity:.2;
+  }
+  .index-head{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    padding-bottom:10px; border-bottom:1px solid var(--rule);
+  }
+  .index-head .ix-title{font-weight:500; color:var(--ink)}
+  .index-head .ix-date{color:var(--muted)}
+
+  .index-entries{list-style:none; margin:0; padding:8px 0 0; }
+  .index-entries li{
+    display:grid; grid-template-columns: 14px 1fr auto; gap:10px;
+    padding:10px 0; border-bottom:1px dashed var(--rule-soft);
+    font-size:14px; align-items:baseline;
+  }
+  .index-entries li:last-child{border-bottom:0}
+  .ix-num{
+    font-family:'Geist Mono',monospace; font-size:10.5px; color:var(--muted);
+    letter-spacing:.04em;
+  }
+  .ix-site{display:flex; flex-direction:column; gap:2px}
+  .ix-site .domain{
+    font-family:'Instrument Serif',serif; font-size:21px; line-height:1;
+    letter-spacing:-0.01em;
+  }
+  .ix-site .recipe{
+    font-family:'Geist Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.02em;
+  }
+  .ix-cost{
+    text-align:right; font-family:'Geist Mono',monospace; font-size:11px;
+    color:var(--ink); white-space:nowrap;
+  }
+  .ix-cost b{color:var(--accent); font-weight:500}
+
+  .index-foot{
+    margin-top:10px; display:flex; justify-content:space-between; align-items:center;
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    padding-top:10px; border-top:1px solid var(--rule);
+    color:var(--muted);
+  }
+  .index-foot .live{color:var(--accent); display:inline-flex; align-items:center; gap:6px}
+  .index-foot .live::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite}
+
+  /* ───────── ticker ───────── */
+  .ticker-wrap{
+    margin-top:32px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);
+    padding:18px 0; overflow:hidden; position:relative;
+    background:var(--paper-2);
+  }
+  .ticker{
+    display:flex; gap:48px; white-space:nowrap;
+    animation:scroll 60s linear infinite;
+    width:max-content;
+    font-family:'Instrument Serif',serif; font-size:34px; line-height:1;
+  }
+  .ticker span{display:inline-flex; align-items:center; gap:18px}
+  .ticker .star{color:var(--accent); font-size:22px; transform:translateY(-3px)}
+  .ticker .meta{
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); padding-left:12px;
+  }
+  @keyframes scroll{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+
+  /* ───────── comparison section ───────── */
+  .comparison-section{
+    padding:96px 0 80px;
+  }
+  .section-head{display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:end; padding-bottom:24px; border-bottom:1px solid var(--ink)}
+  .section-head h2{
+    font-family:'Instrument Serif',serif; font-weight:400;
+    font-size:clamp(40px, 5.6vw, 76px); line-height:0.95; letter-spacing:-0.02em; margin:0;
+  }
+  .section-head h2 em{font-style:italic; color:var(--accent)}
+  .section-head .num{
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .section-head .lede{font-size:15px; color:var(--muted); max-width:380px; line-height:1.5; padding-bottom:8px}
+
+  .demo-frame{
+    margin-top:32px; padding:18px;
+    background:var(--ink); border-radius:18px;
+    box-shadow:14px 14px 0 var(--accent);
+    position:relative;
+  }
+  .demo-frame::before{
+    content:"DEMO · LIVE LOOP";
+    position:absolute; left:24px; top:-11px;
+    background:var(--paper); padding:2px 10px;
+    font-family:'Geist Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    color:var(--ink); border:1px solid var(--ink);
+  }
+  .demo-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px;
+  }
+
+  /* ───────── stat block ───────── */
+  .stat{
+    padding:120px 0;
+    display:grid; grid-template-columns: 1fr auto 1fr; gap:48px; align-items:center;
+    border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);
+    position:relative;
+  }
+  .stat::before{
+    content:""; position:absolute; left:0; right:0; top:3px; height:1px; background:var(--ink); opacity:.4;
+  }
+  .stat-num{
+    font-family:'Instrument Serif',serif; font-weight:400;
+    font-size:clamp(160px, 22vw, 320px); line-height:.85; letter-spacing:-0.04em;
+    text-align:center;
+    position:relative;
+  }
+  .stat-num em{font-style:italic; color:var(--accent)}
+  .stat-num .pct{
+    font-family:'Instrument Serif',serif; font-style:italic; color:var(--accent);
+    font-size:.5em; vertical-align: super; margin-left:-.05em;
+  }
+  .stat-side{font-size:18px; line-height:1.5; color:var(--ink); max-width:340px}
+  .stat-side.right{margin-left:auto; text-align:right}
+  .stat-side .eyebrow{margin-bottom:14px; display:block}
+  .stat-side b{font-weight:600}
+
+  /* ───────── install ───────── */
+  .install{
+    padding:96px 0 80px;
+    display:grid; grid-template-columns: 0.85fr 1.15fr; gap:64px; align-items:start;
+  }
+  .install h2{
+    font-family:'Instrument Serif',serif; font-weight:400;
+    font-size:clamp(48px, 6vw, 84px); line-height:.95; letter-spacing:-0.025em; margin:14px 0 0;
+  }
+  .install h2 em{font-style:italic; color:var(--accent)}
+  .install p{font-size:17px; max-width:420px; line-height:1.5; color:var(--ink); opacity:.82; margin:24px 0 0}
+  .install ol{margin:32px 0 0; padding:0; list-style:none; counter-reset:s;}
+  .install ol li{
+    counter-increment:s;
+    display:grid; grid-template-columns:36px 1fr; gap:14px; align-items:start;
+    padding:14px 0; border-bottom:1px dashed var(--rule);
+    font-size:15px;
+  }
+  .install ol li::before{
+    content:counter(s,decimal-leading-zero); color:var(--accent); font-family:'Instrument Serif',serif;
+    font-style:italic; font-size:24px; line-height:1; padding-top:2px;
+  }
+  .install ol li b{display:block; margin-bottom:2px; font-weight:600}
+  .install ol li span{color:var(--muted); font-size:13.5px}
+
+  .snippet{
+    background:var(--ink); border-radius:14px; overflow:hidden;
+    box-shadow:10px 10px 0 var(--ink);
+  }
+  .snippet-tabs{
+    display:flex; gap:0; border-bottom:1px solid var(--term-line);
+    background:#08080A;
+  }
+  .snippet-tab{
+    padding:14px 20px; font-family:'Geist Mono',monospace; font-size:12px;
+    color:var(--term-dim); border-right:1px solid var(--term-line);
+    background:transparent; border:0; cursor:pointer; letter-spacing:.04em;
+    transition:color .2s, background .2s;
+  }
+  .snippet-tab.active{color:#fff; background:var(--ink); position:relative}
+  .snippet-tab.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--accent);
+  }
+  .snippet-tab:hover{color:#fff}
+  .snippet-body{padding:24px 28px; min-height:260px; position:relative}
+  .snippet-body pre{
+    margin:0; font-family:'Geist Mono',monospace; font-size:13.5px; line-height:1.7;
+    color:#E8E5DD; white-space:pre; overflow:auto;
+  }
+  .snippet-body .copy{
+    position:absolute; top:14px; right:14px;
+    background:rgba(255,255,255,.06); color:var(--term-dim);
+    border:1px solid var(--term-line); padding:6px 10px; border-radius:6px;
+    font-family:'Geist Mono',monospace; font-size:11px; cursor:pointer;
+    transition:color .2s, background .2s;
+  }
+  .snippet-body .copy:hover{color:#fff; background:rgba(255,255,255,.12)}
+  .snippet-body .k{color:#FFC857}
+  .snippet-body .s{color:#5BD8A6}
+  .snippet-body .c{color:rgba(255,255,255,.4); font-style:italic}
+  .snippet-body .p{color:#FF9A7A}
+
+  /* ───────── footer ───────── */
+  footer{
+    margin-top:72px; padding:64px 0 40px;
+    border-top:1px solid var(--ink); position:relative;
+  }
+  footer::before{content:""; position:absolute; left:0; right:0; top:3px; height:1px; background:var(--ink); opacity:.4}
+  .footer-grid{
+    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:48px; align-items:start;
+  }
+  .foot-brand{
+    font-family:'Instrument Serif',serif; font-size:96px; line-height:.85; letter-spacing:-0.03em;
+  }
+  .foot-brand em{font-style:italic; color:var(--accent)}
+  .foot-tag{margin-top:18px; max-width:380px; font-size:14.5px; color:var(--muted)}
+  .foot-col h4{
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink); margin:6px 0 18px;
+  }
+  .foot-col ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+  .foot-col a{font-size:14px; color:var(--ink); opacity:.78}
+  .foot-col a:hover{opacity:1; color:var(--accent)}
+  .foot-bottom{
+    margin-top:64px; padding-top:18px; border-top:1px solid var(--rule);
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ───────── responsive guards ───────── */
+  @media (max-width: 1100px){
+    .wrap{padding:0 32px}
+    .hero{grid-template-columns:1fr; gap:40px}
+    .install{grid-template-columns:1fr; gap:40px}
+    .footer-grid{grid-template-columns:1fr 1fr}
+    .stat{grid-template-columns:1fr; text-align:center; padding:72px 0}
+    .stat-side, .stat-side.right{margin:0 auto; text-align:center}
+    .demo-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="brand">
+      <span class="brand-mark">A</span>
+      <span class="logo">Almanac</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">Docs</a>
+      <a href="#">Pricing</a>
+      <a href="#">Changelog</a>
+      <a href="#">GitHub</a>
+    </nav>
+    <a class="nav-cta" href="#install">Install MCP <span class="arr">↗</span></a>
+  </header>
+
+  <div class="rule-double"></div>
+
+  <div class="masthead-meta">
+    <span>Vol. I · MCP Edition</span>
+    <span class="center"><span class="dot"></span> Sunday, May 10, 2026 — 12,847 entries indexed</span>
+    <span>No. 042 · Pre-release</span>
+  </div>
+
+  <div class="rule-double" style="margin-bottom:0"></div>
+
+  <!-- HERO -->
+  <main class="hero">
+    <section class="hero-left">
+      <span class="hero-eyebrow"><span class="blip"></span> An almanac for the agentic web</span>
+      <h1 class="hero-title">
+        <span class="word">The</span> <span class="word">web,</span><br>
+        <span class="word"><em>already</em></span> <span class="word accent">read</span>
+      </h1>
+      <p class="hero-sub">
+        Almanac is an instant memory for AI agents — a curated index of how every site actually works.
+        Plug in the MCP and your agent stops paying to re-learn Gmail, Stripe, or Google Flights every single task. <b>Cheaper. Faster. Quieter.</b>
+      </p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#install">Install the MCP <span class="arr">→</span></a>
+        <a class="btn-text" href="#how">How it works <span class="arr">↗</span></a>
+      </div>
+      <p class="compat">
+        <span class="compat-label">Plays nicely with</span>
+        <span class="compat-tools">
+          <span>Cursor</span><span>Claude Code</span><span>Cline</span><span>Windsurf</span><span>Devin</span><span>any MCP client</span>
+        </span>
+      </p>
+    </section>
+
+    <aside class="hero-index" aria-label="Today's index">
+      <div class="index-head">
+        <span class="ix-title">Today's Index</span>
+        <span class="ix-date">May 10 · 14:22 UTC</span>
+      </div>
+      <ul class="index-entries" id="indexList">
+        <!-- populated by JS -->
+      </ul>
+      <div class="index-foot">
+        <span>12,847 entries · 412 added today</span>
+        <span class="live">Live</span>
+      </div>
+    </aside>
+  </main>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker" id="ticker"></div>
+  </div>
+
+  <!-- COMPARISON -->
+  <section class="comparison-section" id="how">
+    <div class="section-head">
+      <div>
+        <span class="num">§ 01 · The Demonstration</span>
+        <h2>Same task,<br><em>two universes.</em></h2>
+      </div>
+      <div></div>
+      <p class="lede">
+        A coding agent books a flight from Vancouver to Beijing on Google Flights. On the left, it learns the UI from scratch. On the right, it asks Almanac. Watch the meters.
+      </p>
+    </div>
+
+    <div class="demo-frame">
+      <div class="demo-grid" id="comparison-root"></div>
+    </div>
+  </section>
+
+  <!-- STAT -->
+  <section class="stat">
+    <div class="stat-side">
+      <span class="eyebrow">§ 02 · The Receipt</span>
+      <p>Across <b>2,300+ benchmark tasks</b> on the most-visited 50 web apps, agents using Almanac finished the same work with a fraction of the tokens — and a fraction of the wall-clock time.</p>
+    </div>
+    <div class="stat-num">
+      <em>−70</em><span class="pct">%</span>
+    </div>
+    <div class="stat-side right">
+      <span class="eyebrow">§ 02.b · In English</span>
+      <p>Your bill drops by roughly <b>two thirds.</b> Your agent's "thinking" feels instant. Your context window stays clean enough to keep doing real work.</p>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section class="install" id="install">
+    <div class="install-copy">
+      <span class="num eyebrow">§ 03 · The Setup</span>
+      <h2>Two lines.<br><em>Thirty seconds.</em></h2>
+      <p>Almanac speaks Model Context Protocol, so it slots into whatever your agent already uses. Drop the snippet, restart, done.</p>
+      <ol>
+        <li><div><b>Pick your client</b><span>Cursor, Claude Code, Cline, Windsurf, or any MCP-compatible runtime.</span></div></li>
+        <li><div><b>Paste the snippet</b><span>Adds Almanac to your MCP server list. No SDK, no auth dance.</span></div></li>
+        <li><div><b>Run a task</b><span>Your agent now has 12,847 site recipes in working memory.</span></div></li>
+      </ol>
+    </div>
+
+    <div class="snippet">
+      <div class="snippet-tabs" role="tablist">
+        <button class="snippet-tab active" data-tab="cursor">Cursor</button>
+        <button class="snippet-tab" data-tab="claude">Claude Code</button>
+        <button class="snippet-tab" data-tab="generic">Generic MCP</button>
+        <button class="snippet-tab" data-tab="cli">CLI</button>
+      </div>
+      <div class="snippet-body">
+        <button class="copy" id="copyBtn">Copy</button>
+        <pre id="snippetPre"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="foot-brand">Alman<em>ac.</em></div>
+        <p class="foot-tag">An almanac for the agentic web. Built so your agents finally stop paying tuition every time they open a browser.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Install</a></li>
+          <li><a href="#">Docs</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">DPA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Almanac, Inc. · Printed on the open web.</span>
+      <span>v0.4.2 · last index 14:22 UTC</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ───────── lightweight static-page JS ───────── -->
+<script>
+  // Today's index entries — feel real & specific
+  const ENTRIES = [
+    { site:'gmail.com',     recipe:'archive selected · with shortcut',     tokens:347, days:'2 d ago' },
+    { site:'linear.app',    recipe:'create issue · keyboard-first',        tokens:412, days:'1 d ago' },
+    { site:'stripe.com',    recipe:'refund payment · partial',             tokens:523, days:'12 h ago' },
+    { site:'github.com',    recipe:'open pull request · from branch',      tokens:198, days:'1 d ago' },
+    { site:'figma.com',     recipe:'export frame · png 2x',                tokens:611, days:'6 h ago' },
+    { site:'notion.so',     recipe:'edit page · blocks api',               tokens:289, days:'4 d ago' },
+    { site:'airbnb.com',    recipe:'filter by price · under $200',         tokens:478, days:'3 d ago' },
+    { site:'calendly.com',  recipe:'book meeting · 30 min slot',           tokens:156, days:'1 h ago' },
+    { site:'amazon.com',    recipe:'reorder item · from history',          tokens:692, days:'5 h ago' },
+    { site:'zoom.us',       recipe:'schedule meeting · recurring',         tokens:301, days:'2 d ago' },
+  ];
+  function renderIndex(start){
+    const list = document.getElementById('indexList');
+    list.innerHTML='';
+    for (let i=0;i<7;i++){
+      const e = ENTRIES[(start+i) % ENTRIES.length];
+      const num = String(((start+i) % ENTRIES.length)+1).padStart(2,'0');
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="ix-num">№ ${num}</span>
+        <span class="ix-site">
+          <span class="domain">${e.site}</span>
+          <span class="recipe">${e.recipe}</span>
+        </span>
+        <span class="ix-cost"><b>${e.tokens}</b> tok · ${e.days}</span>
+      `;
+      list.appendChild(li);
+    }
+  }
+  let ixStart = 0;
+  renderIndex(ixStart);
+  setInterval(()=>{ ixStart = (ixStart+1) % ENTRIES.length; renderIndex(ixStart); }, 3500);
+
+  // Ticker
+  const TICKER_SITES = [
+    'gmail.com','linear.app','stripe.com','github.com','figma.com','notion.so',
+    'airbnb.com','calendly.com','amazon.com','zoom.us','slack.com','vercel.com',
+    'shopify.com','salesforce.com','asana.com','dropbox.com','google flights',
+    'open table','doordash','instacart','spotify','youtube studio'
+  ];
+  function buildTicker(){
+    const el = document.getElementById('ticker');
+    const items = TICKER_SITES.map(s=>`<span>${s}<span class="star">✦</span></span>`).join('');
+    el.innerHTML = items + items; // doubled for seamless loop
+  }
+  buildTicker();
+
+  // Snippet tabs
+  const SNIPPETS = {
+    cursor:
+`<span class="c">// .cursor/mcp.json</span>
+{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"almanac"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@almanac/mcp"</span>],
+      <span class="k">"env"</span>: { <span class="k">"ALMANAC_API_KEY"</span>: <span class="s">"alm_••••••••"</span> }
+    }
+  }
+}`,
+    claude:
+`<span class="c"># ~/.claude/config.toml</span>
+[mcp.almanac]
+command = <span class="s">"npx"</span>
+args    = [<span class="s">"-y"</span>, <span class="s">"@almanac/mcp"</span>]
+env     = { ALMANAC_API_KEY = <span class="s">"alm_••••••••"</span> }`,
+    generic:
+`<span class="c">// mcp-config.json</span>
+{
+  <span class="k">"name"</span>: <span class="s">"almanac"</span>,
+  <span class="k">"transport"</span>: <span class="s">"stdio"</span>,
+  <span class="k">"command"</span>: <span class="s">"npx -y @almanac/mcp"</span>,
+  <span class="k">"capabilities"</span>: [<span class="s">"tools"</span>, <span class="s">"resources"</span>]
+}`,
+    cli:
+`<span class="c"># quickest path</span>
+<span class="p">$</span> npx <span class="s">@almanac/cli</span> install
+<span class="c"># detects your client, writes the right config,</span>
+<span class="c"># and verifies the handshake. that's it.</span>
+<span class="p">$</span> almanac <span class="s">status</span>
+<span class="k">→</span> connected · <span class="s">12,847</span> recipes · last sync <span class="s">14:22</span>`
+  };
+  const pre = document.getElementById('snippetPre');
+  function setTab(name){
+    document.querySelectorAll('.snippet-tab').forEach(t=>{
+      t.classList.toggle('active', t.dataset.tab===name);
+    });
+    pre.innerHTML = SNIPPETS[name];
+  }
+  document.querySelectorAll('.snippet-tab').forEach(t=>{
+    t.addEventListener('click', ()=> setTab(t.dataset.tab));
+  });
+  setTab('cursor');
+  document.getElementById('copyBtn').addEventListener('click', e=>{
+    const txt = pre.textContent;
+    navigator.clipboard?.writeText(txt);
+    e.target.textContent = 'Copied';
+    setTimeout(()=> e.target.textContent='Copy', 1500);
+  });
+</script>
+
+<!-- React for animated comparison -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">
+// Animated "Without vs With Almanac" comparison demo
+// Two synchronized terminals + browser-screenshot mock + telemetry log + context meter.
+
+const { useState, useEffect, useRef, useMemo } = React;
+
+// ─────────── data: timelines ───────────
+// Each step: { t: timestamp seconds, label, kind, delta? }
+// kind: 'click' | 'type' | 'select' | 'screenshot' | 'reeval' | 'mistake' | 'lookup' | 'done'
+const WITHOUT = [
+  { t: 0.5,  label: "open browser",                                kind: "click",      tokens: 200 },
+  { t: 1.4,  label: "navigate google.com/travel/flights",          kind: "click",      tokens: 800 },
+  { t: 2.8,  label: "screenshot · OCR + vision",                   kind: "screenshot", tokens: 3200, delta: "+3.2k vision" },
+  { t: 4.4,  label: "click search container",                      kind: "click",      tokens: 200 },
+  { t: 5.6,  label: "screenshot · re-orient",                      kind: "screenshot", tokens: 3100, delta: "+3.1k vision" },
+  { t: 7.2,  label: "click off-target · opens Economy menu",       kind: "mistake",    tokens: 400 },
+  { t: 8.8,  label: "esc · re-screenshot · re-evaluate",           kind: "reeval",     tokens: 3400, delta: "+3.4k vision" },
+  { t: 10.6, label: "click origin input",                          kind: "click",      tokens: 200 },
+  { t: 12.0, label: 'type "YVE"  ·  typo  ·  backspace  ·  "VR"',  kind: "type",       tokens: 600 },
+  { t: 13.4, label: "select YVR",                                  kind: "select",     tokens: 1400, delta: "+1.4k DOM diff" },
+  { t: 14.8, label: "click destination",                           kind: "click",      tokens: 200 },
+  { t: 16.2, label: 'type "Bei"',                                  kind: "type",       tokens: 350 },
+  { t: 18.4, label: "select Beijing",                              kind: "select",     tokens: 1400, delta: "+1.4k DOM diff" },
+  { t: 19.8, label: "click date input",                            kind: "click",      tokens: 200 },
+  { t: 21.2, label: "screenshot · calendar opened",                kind: "screenshot", tokens: 3300, delta: "+3.3k vision" },
+  { t: 23.0, label: "click departure (May 22) — wrong column",     kind: "mistake",    tokens: 250 },
+  { t: 24.4, label: "still working …",                             kind: "click",      tokens: 0 },
+];
+
+const WITH_AL = [
+  { t: 0.4,  label: "lookup almanac · google flights",             kind: "lookup",     tokens: 320 },
+  { t: 1.0,  label: "load recipe · book_round_trip",               kind: "lookup",     tokens: 480 },
+  { t: 1.8,  label: "navigate google.com/travel/flights",          kind: "click",      tokens: 200 },
+  { t: 2.6,  label: 'type "YVR"  →  origin',                       kind: "type",       tokens: 200 },
+  { t: 3.4,  label: "select Vancouver YVR",                        kind: "select",     tokens: 200, delta: "+0.2k DOM diff" },
+  { t: 4.2,  label: 'type "PEK"  →  destination',                  kind: "type",       tokens: 200 },
+  { t: 5.0,  label: "select Beijing PEK",                          kind: "select",     tokens: 200, delta: "+0.2k DOM diff" },
+  { t: 5.6,  label: "click date input",                            kind: "click",      tokens: 100 },
+  { t: 6.4,  label: "click departure (May 22)",                    kind: "click",      tokens: 100 },
+  { t: 7.0,  label: "click return (Jun 21)",                       kind: "click",      tokens: 100 },
+  { t: 7.6,  label: "click Done",                                  kind: "click",      tokens: 100 },
+  { t: 8.2,  label: "click Search",                                kind: "click",      tokens: 100 },
+  { t: 9.6,  label: "results loaded",                              kind: "select",     tokens: 1400, delta: "+1.4k DOM diff" },
+  { t: 10.4, label: "done ✓",                                      kind: "done",       tokens: 0 },
+];
+
+const TOTAL_DURATION = 26;     // seconds for full loop (in animation time)
+const SPEED = 2.8;             // playback multiplier — animation runs SPEED× real time
+const MAX_TOKENS = 70000;
+
+// ─────────── visual scene mocks (stylized, abstract) ───────────
+// Phases by elapsed time → mock different states inside the browser viewport.
+
+function browserPhase(elapsed, side){
+  // returns string id of mock state
+  if (side === "without"){
+    if (elapsed < 2.4) return "blank";
+    if (elapsed < 6.4) return "form";
+    if (elapsed < 10.4) return "menu";        // wrong menu open
+    if (elapsed < 19.5) return "form-typed";
+    if (elapsed < 24.6) return "calendar";
+    return "calendar";
+  } else {
+    if (elapsed < 1.4) return "blank";
+    if (elapsed < 5.4) return "form";
+    if (elapsed < 6.0) return "form-typed";
+    if (elapsed < 8.0) return "calendar";
+    if (elapsed < 9.4) return "form-typed";
+    return "results";
+  }
+}
+
+// ─────────── helpers ───────────
+const fmt = (n)=> n.toLocaleString();
+const padTime = (s)=> s.toFixed(1).padStart(4,"0");
+
+// ─────────── React components ───────────
+
+function URLBar({ url, side }){
+  const dotColor = side === "without" ? "#FF5F57" : "#5BD8A6";
+  return (
+    <div className="urlbar">
+      <div className="dots">
+        <span style={{background:"#FF5F57"}}/>
+        <span style={{background:"#FFBD2E"}}/>
+        <span style={{background:"#28C840"}}/>
+      </div>
+      <div className="url">
+        <span className="lock">🔒</span>
+        <span>{url}</span>
+      </div>
+      <div className="badge" style={{borderColor: side==='without' ? 'rgba(255,107,91,0.4)' : 'rgba(91,216,166,0.4)', color: side==='without'?'var(--term-red)':'var(--term-green)'}}>
+        {side === "without" ? "CURSOR · COLD" : "CURSOR + MCP"}
+      </div>
+    </div>
+  );
+}
+
+function MockGoogleFlights({ phase, side }){
+  // stylized but evocative
+  const accent = side === "without" ? "#FF6B5B" : "#5BD8A6";
+  return (
+    <div className="mock-page">
+      {/* google-ish chrome */}
+      <div className="mock-chrome">
+        <div className="mock-tab"><span className="tab-dot"/><span>{side === "without" ? "Find Cheap Flights Worldwi…" : "Vancouver → Beijing | Goog…"}</span></div>
+        <div className="mock-omnibox">google.com/travel/flights{side==='with' ? '/search' : ''}</div>
+        <div className="mock-nav">
+          <span>≡</span><span style={{color:'#4285F4', fontWeight:600}}>G</span>
+          <span className="pill">Travel</span>
+          <span className="pill">Explore</span>
+          <span className="pill active">Flights</span>
+          <span className="pill">Hotels</span>
+        </div>
+      </div>
+
+      {/* dynamic body */}
+      <div className="mock-body">
+        {phase === "blank" && (
+          <div className="phase phase-blank">
+            <div className="cloud-bg"/>
+            <div className="title-strip"/>
+            <div className="form-card empty"/>
+          </div>
+        )}
+
+        {phase === "form" && (
+          <div className="phase phase-form">
+            <div className="cloud-bg"/>
+            <div className="form-card">
+              <div className="row trip-row">
+                <span className="chip">Round trip ▾</span>
+                <span className="chip">1 ▾</span>
+                <span className="chip">Economy ▾</span>
+              </div>
+              <div className="row inputs">
+                <div className="input"><span className="dot-i"/><span className="ph">From</span></div>
+                <div className="input"><span className="dot-i"/><span className="ph">To</span></div>
+                <div className="input"><span className="ph">Departure</span></div>
+                <div className="input"><span className="ph">Return</span></div>
+              </div>
+              <div className="row btn-row">
+                <span className="btn-search">Search</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {phase === "menu" && (
+          <div className="phase phase-form">
+            <div className="cloud-bg"/>
+            <div className="form-card">
+              <div className="row trip-row">
+                <span className="chip">Round trip ▾</span>
+                <span className="chip">1 ▾</span>
+                <span className="chip active">Economy ▾</span>
+              </div>
+              <div className="row inputs">
+                <div className="input"><span className="ph">From</span></div>
+                <div className="input"><span className="ph">To</span></div>
+                <div className="input"><span className="ph">Departure</span></div>
+                <div className="input"><span className="ph">Return</span></div>
+              </div>
+            </div>
+            {/* wrong menu opened */}
+            <div className="popover">
+              <div className="pop-row pop-active">Economy</div>
+              <div className="pop-row">Premium economy</div>
+              <div className="pop-row">Business</div>
+              <div className="pop-row">First</div>
+            </div>
+          </div>
+        )}
+
+        {phase === "form-typed" && (
+          <div className="phase phase-form">
+            <div className="cloud-bg"/>
+            <div className="form-card">
+              <div className="row trip-row">
+                <span className="chip">Round trip ▾</span>
+                <span className="chip">1 ▾</span>
+                <span className="chip">Economy ▾</span>
+              </div>
+              <div className="row inputs">
+                <div className="input filled"><span className="dot-i"/><span>Vancouver <em>YVR</em></span></div>
+                <div className="input filled"><span className="dot-i"/><span>Beijing <em>PEK</em></span></div>
+                <div className="input filled"><span>Fri, May 22</span></div>
+                <div className="input filled"><span>Sun, Jun 21</span></div>
+              </div>
+              <div className="row btn-row">
+                <span className="btn-search bright">Search</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {phase === "calendar" && (
+          <div className="phase phase-cal">
+            <div className="cloud-bg"/>
+            <div className="form-card faded">
+              <div className="row trip-row">
+                <span className="chip">Round trip ▾</span>
+                <span className="chip">1 ▾</span>
+                <span className="chip">Economy ▾</span>
+              </div>
+              <div className="row inputs">
+                <div className="input filled"><span>Vancouver YVR</span></div>
+                <div className="input filled"><span>Beijing PEK</span></div>
+                <div className="input filled active"><span>Departure</span></div>
+                <div className="input"><span className="ph">Return</span></div>
+              </div>
+            </div>
+            <div className="cal-pop">
+              <div className="cal-head">
+                <span>May</span><span>June</span>
+              </div>
+              <div className="cal-grid">
+                {Array.from({length: 30}, (_,i)=>{
+                  const day = i+1;
+                  const isPicked = (side === "without" && day === 16) || (side === "with" && day === 22);
+                  return (
+                    <div key={i} className={"cal-cell" + (isPicked ? " picked":"")}>
+                      <span className="d">{day}</span>
+                      <span className="p">${(1200 + (i*23)%900).toFixed(0)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {phase === "results" && (
+          <div className="phase phase-results">
+            <div className="result-head">
+              <div className="row inputs">
+                <div className="input filled small"><span>Vancouver YVR</span></div>
+                <div className="input filled small"><span>Beijing PEK</span></div>
+                <div className="input filled small"><span>Fri, May 22</span></div>
+                <div className="input filled small"><span>Sun, Jun 21</span></div>
+              </div>
+              <div className="filters">
+                <span className="chip-sm">All filters</span>
+                <span className="chip-sm">Stops</span>
+                <span className="chip-sm">Airlines</span>
+                <span className="chip-sm">Bags</span>
+                <span className="chip-sm">Price</span>
+                <span className="chip-sm">Times</span>
+              </div>
+              <div className="tabs">
+                <span className="tab active">Best</span>
+                <span className="tab">Cheapest <em>from CA$1,172</em></span>
+              </div>
+            </div>
+            <ul className="results-list">
+              <li><span className="al" style={{background:'#0EA5A4'}}/><span>12:40 AM → 10:45 AM</span><span>Cathay Pacific</span><span>19h 5m</span><span>1 stop</span><span className="price">CA$1,320</span></li>
+              <li><span className="al" style={{background:'#1E40AF'}}/><span>12:55 AM → 9:40 AM</span><span>Korean Air</span><span>17h 45m</span><span>1 stop</span><span className="price">CA$1,498</span></li>
+              <li><span className="al" style={{background:'#DC2626'}}/><span>1:05 PM → 4:55 PM</span><span>Air Canada</span><span>12h 50m</span><span>Nonstop</span><span className="price">CA$2,175</span></li>
+              <li><span className="al" style={{background:'#7C3AED'}}/><span>1:00 PM → 5:00 PM</span><span>Air China</span><span>13h</span><span>Nonstop</span><span className="price">CA$2,198</span></li>
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Telemetry({ side, steps, elapsed, totalTokens, done }){
+  const ref = useRef(null);
+  const visible = steps.filter(s => s.t <= elapsed);
+  useEffect(()=>{
+    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+  }, [visible.length]);
+  const accent = side === "without" ? "var(--term-red)" : "var(--term-green)";
+  const kindColor = (k)=>{
+    if (k === "mistake") return "var(--term-red)";
+    if (k === "screenshot" || k === "reeval") return "var(--term-amber)";
+    if (k === "lookup") return "var(--term-blue)";
+    if (k === "done") return "var(--term-green)";
+    return side === "without" ? "var(--term-amber)" : "var(--term-green)";
+  };
+  return (
+    <div className="telemetry">
+      <div className="tel-head">
+        <span style={{color:accent, fontWeight:600, letterSpacing:'.18em'}}>LIVE TELEMETRY</span>
+        <span style={{color:'var(--term-dim)'}}>{padTime(Math.min(elapsed, side==='with'? 10.8 : 24.6))}s</span>
+      </div>
+      <div className="tel-list" ref={ref}>
+        {visible.map((s,i)=>(
+          <div className="tel-row" key={i}>
+            <span className="t">{padTime(s.t)}s</span>
+            <span className="dot" style={{background:kindColor(s.kind)}}/>
+            <span className="lbl">
+              {s.label}
+              {s.delta && <span className="delta"> {s.delta}</span>}
+            </span>
+          </div>
+        ))}
+        {!done && <div className="tel-row tel-cursor"><span className="t">{padTime(elapsed)}s</span><span className="dot" style={{background:accent}}/><span className="lbl"><span className="caret"/></span></div>}
+      </div>
+      <div className="ctx-block">
+        <div className="ctx-row">
+          <span>CONTEXT WINDOW</span>
+          <span>{fmt(totalTokens)} <span style={{color:'var(--term-dim)'}}>/ {fmt(MAX_TOKENS)}</span> <span style={{color:accent, marginLeft:8}}>({Math.round(100*totalTokens/MAX_TOKENS)}%)</span></span>
+        </div>
+        <div className="ctx-bar">
+          <div className="ctx-fill" style={{
+            width: `${Math.min(100, 100*totalTokens/MAX_TOKENS)}%`,
+            background: side==='without' ? 'linear-gradient(90deg, #5BD8A6 0%, #FFC857 35%, #FF6B5B 75%)' : 'linear-gradient(90deg, #5BD8A6 0%, #5BD8A6 100%)'
+          }}/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Side({ side, elapsed }){
+  const steps = side === "without" ? WITHOUT : WITH_AL;
+  const visible = steps.filter(s => s.t <= elapsed);
+  const totalTokens = visible.reduce((a,s)=> a + (s.tokens || 0), 0);
+  const phase = browserPhase(elapsed, side);
+  const url = side === "without"
+    ? "google.com/travel/flights"
+    : "google.com/travel/flights/search";
+  const wallclock = side === "without" ? Math.min(elapsed, 24.6) : Math.min(elapsed, 10.8);
+  const done = side === "without" ? false : elapsed >= 10.8;
+
+  return (
+    <div className={"side " + side}>
+      <div className="side-head">
+        <span className="side-title" style={{color: side==='without'?'var(--term-red)':'var(--term-green)'}}>
+          {side === "without" ? "Without Almanac" : "With Almanac"}
+        </span>
+        <span className="side-tag">{side === "without" ? "2× SLOWER" : "REAL-TIME"}</span>
+      </div>
+      <URLBar url={url} side={side}/>
+      <MockGoogleFlights phase={phase} side={side}/>
+      <Telemetry side={side} steps={steps} elapsed={elapsed} totalTokens={totalTokens} done={done}/>
+    </div>
+  );
+}
+
+function Comparison(){
+  const [elapsed, setElapsed] = useState(0);
+  const [running, setRunning] = useState(true);
+  const startRef = useRef(performance.now());
+
+  useEffect(()=>{
+    let raf;
+    const tick = ()=>{
+      if (running){
+        const e = ((performance.now() - startRef.current)/1000) * SPEED;
+        if (e >= TOTAL_DURATION){
+          startRef.current = performance.now();
+          setElapsed(0);
+        } else {
+          setElapsed(e);
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return ()=> cancelAnimationFrame(raf);
+  }, [running]);
+
+  const reset = ()=>{ startRef.current = performance.now(); setElapsed(0); setRunning(true); };
+
+  return (
+    <>
+      <Side side="without" elapsed={elapsed}/>
+      <Side side="with" elapsed={elapsed}/>
+      <div className="demo-controls">
+        <button onClick={()=>setRunning(r=>!r)}>{running ? "Pause" : "Play"}</button>
+        <button onClick={reset}>Restart</button>
+        <span className="scrub-label">{padTime(elapsed)}s / {TOTAL_DURATION.toFixed(1)}s</span>
+        <input
+          type="range" min="0" max={TOTAL_DURATION} step="0.1" value={elapsed}
+          onChange={e=>{
+            const v = parseFloat(e.target.value);
+            startRef.current = performance.now() - v*1000;
+            setElapsed(v);
+            setRunning(false);
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("comparison-root")).render(<Comparison/>);
+
+// ─────────── styles for the comparison ───────────
+const css = `
+.side{
+  background: var(--term-bg);
+  border: 1px solid var(--term-line);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  color: #E8E5DD;
+  font-family: 'Geist',sans-serif;
+}
+.side-head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  padding:14px 18px 8px;
+}
+.side-title{
+  font-family:'Geist',sans-serif; font-weight:700; font-size:18px; letter-spacing:.01em;
+}
+.side-tag{
+  font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.18em;
+  color: var(--term-dim); border:1px solid var(--term-line);
+  padding:3px 8px; border-radius:999px;
+}
+.urlbar{
+  display:flex; align-items:center; gap:10px; padding:8px 14px 12px;
+  border-bottom:1px solid var(--term-line);
+}
+.urlbar .dots{display:flex; gap:6px}
+.urlbar .dots span{width:10px; height:10px; border-radius:50%}
+.urlbar .url{
+  flex:1; display:flex; align-items:center; gap:8px;
+  background: rgba(255,255,255,0.04); border:1px solid var(--term-line);
+  border-radius:999px; padding:6px 14px; font-family:'Geist Mono',monospace;
+  font-size:11.5px; color:#D9D5C9;
+}
+.urlbar .lock{font-size:10px; opacity:.6}
+.urlbar .badge{
+  font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.16em;
+  border:1px solid; border-radius:999px; padding:4px 10px;
+}
+
+.mock-page{ background:#fff; color:#222; aspect-ratio: 16 / 9; position:relative; overflow:hidden; }
+.mock-chrome{
+  display:flex; flex-direction:column; gap:0; border-bottom:1px solid #eee;
+  font-family:'Geist',sans-serif; font-size:11px; color:#444;
+}
+.mock-tab{
+  display:flex; align-items:center; gap:6px; padding:6px 10px 4px;
+  border-bottom:1px solid #f1f1f1; background:#fafafa; max-width:260px;
+  border-top-left-radius:8px; border-top-right-radius:8px;
+}
+.mock-tab .tab-dot{width:8px; height:8px; border-radius:50%; background:#3b82f6}
+.mock-omnibox{
+  margin:6px 10px; padding:5px 10px; background:#f3f3f3; border-radius:999px;
+  font-family:'Geist Mono',monospace; font-size:10px; color:#666;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.mock-nav{display:flex; gap:6px; padding:4px 12px 8px; align-items:center}
+.mock-nav .pill{padding:3px 9px; border-radius:999px; color:#444}
+.mock-nav .pill.active{background:#e8f0fe; color:#1a73e8}
+
+.mock-body{position:relative; height: calc(100% - 78px); overflow:hidden}
+.cloud-bg{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 30%, #e7f0fe 0%, transparent 60%),
+    linear-gradient(180deg, #fff 0%, #f4f7fb 100%);
+}
+.phase{position:absolute; inset:0; padding:18px}
+.title-strip{ position:absolute; left:50%; top:18%; transform:translateX(-50%); width:46%; height:18px; background:rgba(0,0,0,0.06); border-radius:4px}
+.form-card{
+  position:absolute; left:8%; right:8%; bottom:18%;
+  background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:12px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.08);
+  display:flex; flex-direction:column; gap:8px;
+}
+.form-card.empty{height:120px}
+.form-card.faded{opacity:.5}
+.row{display:flex; gap:8px; align-items:center}
+.row.trip-row .chip{
+  font-size:10px; padding:4px 10px; background:#f3f3f3; border-radius:6px; color:#444;
+}
+.row.trip-row .chip.active{background:#e8f0fe; color:#1a73e8}
+.row.inputs{ display:grid; grid-template-columns: 1.4fr 1.4fr 1fr 1fr; gap:6px; }
+.input{
+  border:1px solid #e0e0e0; border-radius:6px; padding:8px 10px;
+  font-size:11px; color:#777; display:flex; align-items:center; gap:6px;
+  background:#fff; min-height:30px;
+}
+.input.small{ padding:5px 8px; font-size:10px; min-height:24px }
+.input .dot-i{width:8px; height:8px; border-radius:50%; border:1.5px solid #888}
+.input.filled{color:#222}
+.input.filled em{color:#888; font-style:normal; font-size:10px; margin-left:6px}
+.input.active{border-color:#1a73e8; box-shadow:0 0 0 3px rgba(26,115,232,0.18)}
+.input .ph{color:#aaa}
+.row.btn-row{justify-content:flex-end}
+.btn-search{
+  background:#1a73e8; color:#fff; padding:5px 14px; border-radius:999px; font-size:11px; font-weight:500;
+}
+.btn-search.bright{box-shadow:0 0 0 3px rgba(26,115,232,0.2)}
+
+.popover{
+  position:absolute; top:46%; left:36%; width:120px;
+  background:#fff; border:1px solid #e0e0e0; border-radius:6px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); padding:4px; font-size:10px;
+}
+.pop-row{padding:6px 10px; border-radius:4px; color:#333}
+.pop-row.pop-active{background:#e8f0fe; color:#1a73e8}
+
+.cal-pop{
+  position:absolute; left:50%; top:50%; transform:translate(-50%, -45%);
+  width:70%; background:#fff; border-radius:8px; border:1px solid #e0e0e0;
+  box-shadow:0 12px 32px rgba(0,0,0,0.18);
+  padding:14px;
+}
+.cal-head{display:flex; justify-content:space-around; font-size:12px; font-weight:500; padding-bottom:8px; border-bottom:1px solid #f0f0f0}
+.cal-grid{
+  display:grid; grid-template-columns: repeat(10, 1fr); gap:2px;
+  padding-top:8px;
+}
+.cal-cell{
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:8px; color:#444; border-radius:4px; padding:2px;
+}
+.cal-cell .d{font-weight:500}
+.cal-cell .p{color:#0a8754; font-size:7px}
+.cal-cell.picked{background:#1a73e8; color:#fff}
+.cal-cell.picked .p{color:#dbeafe}
+
+.phase-results{padding:12px}
+.result-head{display:flex; flex-direction:column; gap:8px}
+.filters{display:flex; gap:6px; flex-wrap:wrap}
+.chip-sm{font-size:9px; padding:3px 8px; border:1px solid #e0e0e0; border-radius:999px; color:#444}
+.tabs{display:flex; gap:0; border-bottom:1px solid #eee; margin-top:4px}
+.tab{padding:6px 14px; font-size:11px; color:#777}
+.tab.active{color:#1a73e8; border-bottom:2px solid #1a73e8; font-weight:500}
+.tab em{color:#888; font-style:normal; font-size:10px; margin-left:6px}
+.results-list{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:0}
+.results-list li{
+  display:grid; grid-template-columns: 14px 1.3fr 1fr 0.7fr 0.7fr 0.8fr; gap:8px;
+  font-size:10px; padding:8px 4px; border-bottom:1px solid #f0f0f0; align-items:center;
+}
+.results-list .al{width:10px; height:10px; border-radius:2px}
+.results-list .price{text-align:right; font-weight:600}
+
+/* telemetry */
+.telemetry{
+  background:#08080A;
+  border-top:1px solid var(--term-line);
+  padding:14px 18px 16px;
+  display:flex; flex-direction:column; gap:10px;
+  font-family:'Geist Mono',monospace;
+  font-size:12px;
+}
+.tel-head{display:flex; justify-content:space-between; font-size:10.5px; letter-spacing:.18em}
+.tel-list{
+  display:flex; flex-direction:column; gap:4px;
+  height:138px; overflow:hidden; mask-image: linear-gradient(to bottom, transparent, black 12px, black calc(100% - 12px), transparent);
+}
+.tel-row{display:grid; grid-template-columns: 56px 12px 1fr; gap:8px; align-items:baseline}
+.tel-row .t{color:var(--term-dim); font-size:11px}
+.tel-row .dot{width:6px; height:6px; border-radius:50%; transform:translateY(-1px); justify-self:center}
+.tel-row .lbl{color:#E8E5DD; font-size:12px}
+.tel-row .delta{color:var(--term-dim); margin-left:6px}
+.caret{display:inline-block; width:7px; height:13px; background:#E8E5DD; vertical-align:-2px; animation:blink 1s steps(2) infinite}
+@keyframes blink{0%,50%{opacity:1} 51%,100%{opacity:0}}
+
+.ctx-block{display:flex; flex-direction:column; gap:6px; padding-top:8px; border-top:1px solid var(--term-line)}
+.ctx-row{display:flex; justify-content:space-between; font-size:11px; letter-spacing:.14em; color:#E8E5DD}
+.ctx-bar{height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden}
+.ctx-fill{height:100%; transition:width .25s linear}
+
+.demo-controls{
+  grid-column: 1 / -1;
+  display:flex; gap:14px; align-items:center;
+  padding:14px 4px 0; color:var(--term-dim);
+  font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:.14em;
+}
+.demo-controls button{
+  background:rgba(255,255,255,0.04); color:#fff; border:1px solid var(--term-line);
+  padding:6px 14px; border-radius:6px; font-family:'Geist Mono',monospace;
+  font-size:11px; letter-spacing:.14em; cursor:pointer;
+}
+.demo-controls button:hover{background:rgba(255,255,255,0.1)}
+.demo-controls .scrub-label{margin-left:8px}
+.demo-controls input[type=range]{flex:1; accent-color: var(--accent)}
+`;
+const styleTag = document.createElement("style");
+styleTag.textContent = css;
+document.head.appendChild(styleTag);
+
+</script>
+</body>
+</html>

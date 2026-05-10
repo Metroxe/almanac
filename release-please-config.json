@@ -10,6 +10,7 @@
 		"apps/backend": { "component": "backend" },
 		"apps/discoverer": { "component": "discoverer" },
 		"apps/mcp": { "component": "mcp" },
+		"apps/site": { "component": "site" },
 		"packages/shared": { "component": "shared" }
 	}
 }
