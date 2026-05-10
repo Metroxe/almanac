@@ -1,6 +1,6 @@
 {
 	"name": "@almanac/backend",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"private": true,
 	"description": "Almanac HTTP backend — gateway to Nia, write-token gated, posts Clustly bounties",
 	"type": "module",
