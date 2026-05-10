@@ -14,11 +14,11 @@
 	"scripts": {
 		"build": "tsc --build",
 		"clean": "tsc --build --clean",
-		"dev:mcp": "npm run -w @metroxe/almanac dev",
+		"dev:mcp": "npm run -w @christopher_powroznik/almanac dev",
 		"dev:backend": "npm run -w @almanac/backend dev",
 		"dev:discover": "npm run -w @almanac/discoverer dev",
 		"dev:bounty": "npm run -w @almanac/discoverer bounty",
-		"start:mcp": "npm run -w @metroxe/almanac start",
+		"start:mcp": "npm run -w @christopher_powroznik/almanac start",
 		"start:backend": "npm run -w @almanac/backend start",
 		"check": "biome check",
 		"format": "biome format --write",

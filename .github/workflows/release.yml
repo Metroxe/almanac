@@ -106,7 +106,7 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
       - run: npm ci
-      - run: npm run build -w @metroxe/almanac
-      - run: npm publish -w @metroxe/almanac
+      - run: npm run build -w @christopher_powroznik/almanac
+      - run: npm publish -w @christopher_powroznik/almanac
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
