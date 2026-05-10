@@ -1,10 +1,28 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { type Recipe, Recipe as RecipeSchema, type RecipeSummary } from "@almanac/shared";
+import {
+	type Recipe,
+	Recipe as RecipeSchema,
+	type RecipeSummary,
+} from "@almanac/shared";
 
 const STOPWORDS = new Set([
-	"the", "and", "for", "with", "from", "into", "you", "your",
-	"find", "how", "what", "when", "where", "get", "use", "via",
+	"the",
+	"and",
+	"for",
+	"with",
+	"from",
+	"into",
+	"you",
+	"your",
+	"find",
+	"how",
+	"what",
+	"when",
+	"where",
+	"get",
+	"use",
+	"via",
 ]);
 
 export class RecipeCache {

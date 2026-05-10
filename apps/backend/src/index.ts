@@ -80,9 +80,11 @@ app.post("/recipes", async (c) => {
 	await cache.upsert(parsed.data);
 	// Best-effort write-through to Nia. Don't block the response on rate-limit
 	// or transient errors — the cache is authoritative for serving.
-	nia.upsertRecipe(parsed.data).catch((err) =>
-		console.warn(`[nia upsert ${parsed.data.id}]`, (err as Error).message),
-	);
+	nia
+		.upsertRecipe(parsed.data)
+		.catch((err) =>
+			console.warn(`[nia upsert ${parsed.data.id}]`, (err as Error).message),
+		);
 	return c.json({ ok: true, id: parsed.data.id });
 });
 
