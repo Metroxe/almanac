@@ -2,13 +2,19 @@
 	{
 		"site": "booking.com",
 		"intent": "search_hotels",
-		"description": "Search for hotels in a city/destination on a date range, returning a list of properties with prices, ratings, and availability. Probe for URL-parameter shortcuts that skip the homepage UI.",
+		"description": "Search for hotels in a city/destination on a date range, returning a list of properties with prices, ratings, and availability. Probe for URL-parameter shortcuts that skip the homepage UI (Booking exposes ?ss={city}&checkin={date}&checkout={date} on /searchresults.html — verify it still works).",
 		"bountyUsdc": 25
 	},
 	{
 		"site": "kayak.com",
 		"intent": "search_flights",
-		"description": "Search for one-way or round-trip flights between two airports on given dates. Return structured results with price, airline, and duration.",
+		"description": "Search for one-way or round-trip flights between two airports on given dates. Return structured results with price, airline, and duration. Kayak deep-links via /flights/{ORIGIN}-{DEST}/{YYYY-MM-DD} — confirm and capture the URL pattern.",
 		"bountyUsdc": 25
+	},
+	{
+		"site": "github.com",
+		"intent": "search_repositories",
+		"description": "Search GitHub repositories by keyword and language. The /search?q={query}+language%3A{lang}&type=repositories endpoint is well-documented; capture it as fastest_path plus a fallback recipe that drives the search bar UI. Extraction should pull repo name, description, stars, and primary language from result cards.",
+		"bountyUsdc": 15
 	}
 ]
