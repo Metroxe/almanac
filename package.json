@@ -1,0 +1,50 @@
+{
+  "name": "almanac",
+  "version": "0.1.0",
+  "description": "Almanac MCP server — site recipe index for coding agents",
+  "type": "module",
+  "bin": {
+    "almanac": "dist/mcp/index.js"
+  },
+  "files": [
+    "dist/mcp",
+    "dist/shared"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/mcp/index.js",
+    "dev:mcp": "tsx watch src/mcp/index.ts",
+    "dev:backend": "tsx watch --env-file=.env src/backend/index.ts",
+    "dev:discover": "tsx --env-file=.env src/discoverer/index.ts",
+    "dev:bounty": "tsx --env-file=.env src/discoverer/bounty.ts",
+    "start:mcp": "node dist/mcp/index.js",
+    "start:backend": "node --env-file=.env dist/backend/index.js",
+    "check": "biome check",
+    "format": "biome format --write",
+    "lint": "biome lint",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "browser-automation",
+    "site-recipes"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.15",
+    "@hono/node-server": "^1.13.7",
+    "@types/node": "^25.6.2",
+    "hono": "^4.6.14",
+    "playwright": "^1.49.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}

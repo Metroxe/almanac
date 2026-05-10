@@ -1,0 +1,14 @@
+[
+  {
+    "site": "booking.com",
+    "intent": "search_hotels",
+    "description": "Search for hotels in a city/destination on a date range, returning a list of properties with prices, ratings, and availability. Probe for URL-parameter shortcuts that skip the homepage UI.",
+    "bountyUsdc": 25
+  },
+  {
+    "site": "kayak.com",
+    "intent": "search_flights",
+    "description": "Search for one-way or round-trip flights between two airports on given dates. Return structured results with price, airline, and duration.",
+    "bountyUsdc": 25
+  }
+]
