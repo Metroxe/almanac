@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.4](https://github.com/Metroxe/almanac/compare/backend-v0.1.3...backend-v0.1.4) (2026-05-10)
+
+
+### Features
+
+* cut maintenance release ([#7](https://github.com/Metroxe/almanac/issues/7)) ([a845124](https://github.com/Metroxe/almanac/commit/a845124294a920cae88a756e816f7d15572179b3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @almanac/shared bumped from 0.1.1 to 0.1.2
+
 ## [0.1.3](https://github.com/Metroxe/almanac/compare/backend-v0.1.2...backend-v0.1.3) (2026-05-10)
 
 

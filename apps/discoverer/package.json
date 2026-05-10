@@ -1,6 +1,6 @@
 {
 	"name": "@almanac/discoverer",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"private": true,
 	"description": "Discoverer agent — Playwright-driven exploration that POSTs recipes to the backend",
 	"type": "module",
@@ -12,7 +12,7 @@
 		"start": "node --env-file=.env dist/index.js"
 	},
 	"dependencies": {
-		"@almanac/shared": "0.1.1",
+		"@almanac/shared": "0.1.2",
 		"playwright": "^1.59.1",
 		"zod": "^4.4.3"
 	}
