@@ -1,0 +1,8 @@
+# Changelog
+
+## [0.1.1](https://github.com/Metroxe/almanac/compare/mcp-v0.1.0...mcp-v0.1.1) (2026-05-10)
+
+
+### Features
+
+* backend cache + round-trip recipe + per-app env config ([bceb4e8](https://github.com/Metroxe/almanac/commit/bceb4e89c3045921321ba94d1ce1d4490145b131))

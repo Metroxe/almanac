@@ -1,6 +1,6 @@
 {
-	"apps/backend": "0.1.0",
-	"apps/discoverer": "0.1.0",
-	"apps/mcp": "0.1.0",
-	"packages/shared": "0.1.0"
+	"apps/backend": "0.1.1",
+	"apps/discoverer": "0.1.1",
+	"apps/mcp": "0.1.1",
+	"packages/shared": "0.1.1"
 }
