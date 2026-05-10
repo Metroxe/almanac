@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Metroxe/almanac/compare/backend-v0.1.1...backend-v0.1.2) (2026-05-10)
+
+
+### Bug Fixes
+
+* **backend:** chown /app to node so RecipeCache.mkdir works ([#3](https://github.com/Metroxe/almanac/issues/3)) ([3fff703](https://github.com/Metroxe/almanac/commit/3fff703bb88c5f7937333cf808a99f883da1c8ad))
+
 ## [0.1.1](https://github.com/Metroxe/almanac/compare/backend-v0.1.0...backend-v0.1.1) (2026-05-10)
 
 
