@@ -1,6 +1,6 @@
 {
 	"name": "@christopher_powroznik/almanac",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Almanac MCP server — local stdio MCP that any coding agent can install",
 	"type": "module",
 	"bin": {

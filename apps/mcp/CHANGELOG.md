@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Metroxe/almanac/compare/mcp-v0.1.1...mcp-v0.1.2) (2026-05-10)
+
+
+### Features
+
+* cut maintenance release ([#7](https://github.com/Metroxe/almanac/issues/7)) ([a845124](https://github.com/Metroxe/almanac/commit/a845124294a920cae88a756e816f7d15572179b3))
+
 ## [0.1.1](https://github.com/Metroxe/almanac/compare/mcp-v0.1.0...mcp-v0.1.1) (2026-05-10)
 
 
