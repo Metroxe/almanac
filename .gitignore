@@ -41,5 +41,9 @@ SPEC.md
 # Claude Code local state
 .claude/
 
+# Backend recipe cache (runtime artifact; populated by the discoverer)
+apps/backend/recipes/
+apps/backend/apps/
+
 # Misc
 *.log

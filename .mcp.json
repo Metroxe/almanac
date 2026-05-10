@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"almanac": {
+			"command": "node",
+			"args": ["apps/mcp/dist/index.js"],
+			"env": {
+				"ALMANAC_BACKEND_URL": "http://localhost:8787"
+			}
+		}
+	}
+}
