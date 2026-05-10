@@ -6,9 +6,8 @@
 import { readFile } from "node:fs/promises";
 import { z } from "zod";
 
-const backendUrl =
-	process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
-const writeToken = process.env["ALMANAC_WRITE_TOKEN"];
+const backendUrl = process.env.ALMANAC_BACKEND_URL ?? "http://localhost:8787";
+const writeToken = process.env.ALMANAC_WRITE_TOKEN;
 
 if (!writeToken) {
 	throw new Error("ALMANAC_WRITE_TOKEN must be set to post bounties");

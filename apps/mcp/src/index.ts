@@ -4,7 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 const backendUrl =
-	process.env["ALMANAC_BACKEND_URL"] ?? "https://api.almanac.dev";
+	process.env.ALMANAC_BACKEND_URL ?? "https://almanac.boilerroom.tech";
 
 const server = new McpServer({
 	name: "almanac",

@@ -1,0 +1,112 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+  id-token: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+      backend_release_created: ${{ steps.release.outputs['apps/backend--release_created'] }}
+      backend_tag_name: ${{ steps.release.outputs['apps/backend--tag_name'] }}
+      discoverer_release_created: ${{ steps.release.outputs['apps/discoverer--release_created'] }}
+      discoverer_tag_name: ${{ steps.release.outputs['apps/discoverer--tag_name'] }}
+      mcp_release_created: ${{ steps.release.outputs['apps/mcp--release_created'] }}
+      mcp_tag_name: ${{ steps.release.outputs['apps/mcp--tag_name'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish-backend:
+    needs: release-please
+    if: needs.release-please.outputs.backend_release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/almanac-backend
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.release-please.outputs.backend_tag_name }}
+            type=sha,format=long
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  publish-discoverer:
+    needs: release-please
+    if: needs.release-please.outputs.discoverer_release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/almanac-discoverer
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.release-please.outputs.discoverer_tag_name }}
+            type=sha,format=long
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/discoverer/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  publish-mcp:
+    needs: release-please
+    if: needs.release-please.outputs.mcp_release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm run build -w almanac
+      - run: npm publish -w almanac
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

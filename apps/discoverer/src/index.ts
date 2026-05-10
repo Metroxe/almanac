@@ -2,9 +2,8 @@ import { createHash } from "node:crypto";
 import type { Recipe } from "@almanac/shared";
 import { chromium } from "playwright";
 
-const backendUrl =
-	process.env["ALMANAC_BACKEND_URL"] ?? "http://localhost:8787";
-const writeToken = process.env["ALMANAC_WRITE_TOKEN"];
+const backendUrl = process.env.ALMANAC_BACKEND_URL ?? "http://localhost:8787";
+const writeToken = process.env.ALMANAC_WRITE_TOKEN;
 
 if (!writeToken) {
 	throw new Error("ALMANAC_WRITE_TOKEN must be set to push recipes");
