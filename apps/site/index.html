@@ -1067,7 +1067,7 @@ function Comparison(){
           type="range" min="0" max={TOTAL_DURATION} step="0.1" value={elapsed}
           onChange={e=>{
             const v = parseFloat(e.target.value);
-            startRef.current = performance.now() - v*1000;
+            startRef.current = performance.now() - (v/SPEED)*1000;
             setElapsed(v);
             setRunning(false);
           }}
