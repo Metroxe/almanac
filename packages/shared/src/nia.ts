@@ -1,17 +1,42 @@
 import type { Recipe, RecipeSummary } from "./recipe.js";
 
-// Nia client targets the v2 filesystem + search API (apigcp.trynia.ai/v2).
+const STOPWORDS = new Set([
+	"the",
+	"and",
+	"for",
+	"with",
+	"from",
+	"into",
+	"you",
+	"your",
+	"find",
+	"how",
+	"what",
+	"when",
+	"where",
+	"get",
+	"use",
+	"via",
+]);
+
+function escapeRegex(s: string): string {
+	return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Nia client targets the v2 filesystem API (apigcp.trynia.ai/v2/fs).
 // Setup is one-time and out of band: `POST /v2/fs` with {name, description}
-// returns a `source_id`, which we treat as the Almanac knowledge-base handle
-// and pass in as `sourceId` (env: NIA_KB_ID).
+// returns an id, which we pass in as `sourceId` (env: NIA_KB_ID).
 //
 // Write path  : PUT  /v2/fs/{source_id}/files            body: {path, body, ...}
 // Read path   : GET  /v2/fs/{source_id}/read?path=...    returns file content
-// Search path : POST /v2/search   body: {mode:"universal", query, top_k, ...}
+// Search path : POST /v2/fs/{source_id}/grep             body: {pattern}
 //
-// Universal search is "Vector + BM25 across all indexed sources, no LLM synthesis"
-// — exactly what we want. Recipes are stored as one JSON file per recipe;
-// recipe.id doubles as the file path inside the namespace.
+// Why grep, not /v2/search? The unified search endpoint is global by design —
+// even with data_sources / local_folders / source_ids set, it returns hits
+// from public repos and other indexed sources, not our fs namespace. Probed
+// every documented filter; none scope to a filesystem source. fs/grep is the
+// only primitive that stays inside our namespace, so it's what we use for
+// recipe lookup. Recipe id = file path (with .json suffix).
 
 export interface NiaConfig {
 	apiKey: string;
@@ -19,17 +44,10 @@ export interface NiaConfig {
 	baseUrl?: string;
 }
 
-interface UniversalSearchHit {
-	// Best-effort shape — Nia's docs describe "relevance scores, highlighted
-	// excerpts, and source metadata" but don't pin field names. We log the raw
-	// response on first use to confirm and tighten this.
-	score?: number;
-	source_id?: string;
-	path?: string;
-	content?: string;
-	text?: string;
-	highlights?: string[];
-	metadata?: Record<string, unknown>;
+interface GrepMatch {
+	path: string;
+	line: string;
+	line_number?: number;
 }
 
 export class NiaClient {
@@ -44,9 +62,11 @@ export class NiaClient {
 	}
 
 	async upsertRecipe(recipe: Recipe): Promise<void> {
+		// Pretty-print so grep returns one match per matching field, not one per
+		// recipe. Multi-keyword queries can then rank by hit count.
 		await this.request("PUT", `/fs/${this.sourceId}/files`, {
 			path: this.fileFor(recipe.id),
-			body: JSON.stringify(recipe),
+			body: JSON.stringify(recipe, null, 2),
 			encoding: "utf8",
 			language: "json",
 		});
@@ -57,40 +77,42 @@ export class NiaClient {
 		site?: string,
 		limit = 5,
 	): Promise<RecipeSummary[]> {
-		const scopedQuery = site ? `${query} site:${site}` : query;
-		const res = await this.request<{
-			results?: UniversalSearchHit[];
-			hits?: UniversalSearchHit[];
-		}>("POST", `/search`, {
-			mode: "universal",
-			query: scopedQuery,
-			top_k: limit,
-			// Restrict to our namespace when the API supports it; harmless if ignored.
-			source_ids: [this.sourceId],
-		});
-		const hits = res.results ?? res.hits ?? [];
+		const terms = this.keywords(query);
+		if (site) terms.push(...this.keywords(site));
+		if (terms.length === 0) return [];
+
+		// One grep call (Nia bills per call). The OR-pattern returns lines that
+		// match any keyword; we then inspect each line's text to count which
+		// keywords actually hit, so ranking reflects distinct-keyword coverage
+		// instead of raw match count (which boilerplate like the /travel/flights
+		// URL path would otherwise inflate equally across every recipe).
+		const pattern = `(${terms.map(escapeRegex).join("|")})`;
+		const res = await this.request<{ matches?: GrepMatch[] }>(
+			"POST",
+			`/fs/${this.sourceId}/grep`,
+			{ pattern, ignore_case: true },
+		);
+		const matches = res.matches ?? [];
+
+		const hitsByPath = new Map<string, Set<string>>();
+		for (const m of matches) {
+			const line = m.line.toLowerCase();
+			let hits = hitsByPath.get(m.path);
+			if (!hits) {
+				hits = new Set();
+				hitsByPath.set(m.path, hits);
+			}
+			for (const term of terms) {
+				if (line.includes(term)) hits.add(term);
+			}
+		}
+		const ranked = [...hitsByPath.entries()]
+			.sort((a, b) => b[1].size - a[1].size)
+			.slice(0, limit)
+			.map(([path]) => path);
+
 		const recipes = await Promise.all(
-			hits.map(async (hit) => {
-				if (hit.metadata && typeof hit.metadata === "object") {
-					const maybe = hit.metadata as Partial<Recipe>;
-					if (maybe.id && maybe.site && maybe.task && maybe.description) {
-						return maybe as Recipe;
-					}
-				}
-				const text = hit.content ?? hit.text;
-				if (text) {
-					try {
-						return JSON.parse(text) as Recipe;
-					} catch {
-						// fall through to path-based fetch
-					}
-				}
-				if (hit.path) {
-					const id = this.idForFile(hit.path);
-					return await this.getRecipe(id);
-				}
-				return null;
-			}),
+			ranked.map((path) => this.getRecipe(this.idForFile(path))),
 		);
 		return recipes
 			.filter((r): r is Recipe => r !== null)
@@ -102,6 +124,13 @@ export class NiaClient {
 				last_verified: r.last_verified,
 				version_hash: r.version_hash,
 			}));
+	}
+
+	private keywords(input: string): string[] {
+		return input
+			.toLowerCase()
+			.split(/[^a-z0-9]+/)
+			.filter((w) => w.length >= 3 && !STOPWORDS.has(w));
 	}
 
 	async getRecipe(id: string): Promise<Recipe | null> {

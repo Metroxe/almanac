@@ -3,6 +3,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { z } from "zod";
+import { RecipeCache } from "./cache.js";
 import { verifyDeliverable } from "./verify.js";
 
 const niaApiKey = process.env.NIA_API_KEY;
@@ -12,6 +13,10 @@ const clustlyApiKey = process.env.CLUSTLY_API_KEY;
 const clustlyWebhookSecret = process.env.CLUSTLY_WEBHOOK_SECRET;
 const clustlyLive = process.env.CLUSTLY_LIVE === "true";
 const port = Number(process.env.PORT ?? 8787);
+// Resolved relative to the backend workspace's CWD (apps/backend) when
+// launched via `npm run -w @almanac/backend ...`, so this lands at
+// apps/backend/recipes/ regardless of how the script is invoked.
+const cacheDir = process.env.ALMANAC_CACHE_DIR ?? "recipes";
 
 if (!niaApiKey || !niaKbId) {
 	throw new Error("NIA_API_KEY and NIA_KB_ID must be set");
@@ -20,7 +25,13 @@ if (!writeToken) {
 	throw new Error("ALMANAC_WRITE_TOKEN must be set (gates discoverer writes)");
 }
 
-// NIA_KB_ID is the source_id returned from `POST /v2/fs` during one-time setup.
+// Backend is the source of truth for recipes — in-memory + on-disk cache.
+// Nia receives best-effort write-through so recipes are still indexed in the
+// shared knowledge base for cross-host retrieval, but reads/searches never
+// hit Nia at request time. This keeps the demo fast and resilient to Nia's
+// 50/month free-tier rate limits on grep + read.
+const cache = new RecipeCache(cacheDir);
+await cache.load();
 const nia = new NiaClient({ apiKey: niaApiKey, sourceId: niaKbId });
 const clustly = clustlyApiKey
 	? new ClustlyClient({ apiKey: clustlyApiKey, live: clustlyLive })
@@ -30,20 +41,25 @@ const app = new Hono();
 app.use("*", cors());
 
 app.get("/healthz", (c) =>
-	c.json({ ok: true, clustly: !!clustly, clustlyLive }),
+	c.json({
+		ok: true,
+		clustly: !!clustly,
+		clustlyLive,
+		recipeCount: cache.size(),
+	}),
 );
 
-app.get("/recipes/search", async (c) => {
+app.get("/recipes/search", (c) => {
 	const intent = c.req.query("intent");
 	const site = c.req.query("site");
 	const limit = Number(c.req.query("limit") ?? 5);
 	if (!intent) return c.json({ error: "intent is required" }, 400);
-	const results = await nia.search(intent, site, limit);
+	const results = cache.search(intent, site, limit);
 	return c.json({ results });
 });
 
-app.get("/recipes/:id", async (c) => {
-	const recipe = await nia.getRecipe(c.req.param("id"));
+app.get("/recipes/:id", (c) => {
+	const recipe = cache.get(c.req.param("id"));
 	if (!recipe) return c.json({ error: "not found" }, 404);
 	c.header("cache-control", "public, max-age=300");
 	return c.json(recipe);
@@ -61,7 +77,12 @@ app.post("/recipes", async (c) => {
 			400,
 		);
 	}
-	await nia.upsertRecipe(parsed.data);
+	await cache.upsert(parsed.data);
+	// Best-effort write-through to Nia. Don't block the response on rate-limit
+	// or transient errors — the cache is authoritative for serving.
+	nia.upsertRecipe(parsed.data).catch((err) =>
+		console.warn(`[nia upsert ${parsed.data.id}]`, (err as Error).message),
+	);
 	return c.json({ ok: true, id: parsed.data.id });
 });
 
